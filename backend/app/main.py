@@ -36,6 +36,18 @@ app.include_router(admin.router, prefix=api_v1_prefix)
 @app.on_event("startup")
 def startup_event():
     init_db()
+    from backend.app.core.database import SessionLocal, User
+    db = SessionLocal()
+    try:
+        if db.query(User).count() == 0:
+            print("[*] Empty database detected. Auto-seeding initial demo data...")
+            from scripts.seed_demo_data import seed_database
+            seed_database()
+            print("[OK] Demo database successfully auto-seeded on startup.")
+    except Exception as e:
+        print(f"[!] Auto-seed exception on startup: {e}")
+    finally:
+        db.close()
 
 @app.get("/")
 def root():
