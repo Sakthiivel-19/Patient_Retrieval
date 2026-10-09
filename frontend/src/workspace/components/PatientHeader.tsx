@@ -6,7 +6,6 @@ interface PatientHeaderProps {
   brief: PatientBrief;
   onBack: () => void;
   onOpenUpload: () => void;
-  onOpenAudit: () => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }
@@ -15,7 +14,6 @@ export const PatientHeader: React.FC<PatientHeaderProps> = ({
   brief,
   onBack,
   onOpenUpload,
-  onOpenAudit,
   activeTab,
   setActiveTab,
 }) => {
@@ -90,12 +88,6 @@ export const PatientHeader: React.FC<PatientHeaderProps> = ({
         </button>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={onOpenAudit}
-            className="btn-secondary text-xs py-2 px-3.5 rounded-xl cursor-pointer font-bold text-slate-800 hover:text-emerald-900 bg-white border border-emerald-300 shadow-xs flex items-center gap-2"
-          >
-            <ShieldCheck className="w-4 h-4 text-emerald-700" /> View Audit Trail
-          </button>
           <button
             onClick={onOpenUpload}
             className="btn-primary text-xs py-2 px-4 rounded-xl cursor-pointer bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-sm flex items-center gap-2"

@@ -118,7 +118,7 @@ export function App() {
             className="inline-flex items-center gap-2 text-xs px-3.5 py-2 rounded-xl bg-white hover:bg-emerald-50 border-2 border-emerald-300 text-slate-950 transition-all font-mono font-bold shadow-sm cursor-pointer hover:border-emerald-500"
           >
             <ShieldCheck className="w-4 h-4 text-emerald-700" />
-            Audit Log
+            Audit Trail
           </button>
 
           <UserSwitcher

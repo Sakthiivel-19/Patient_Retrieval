@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, User, Calendar, ShieldCheck, ShieldAlert, FileText, ArrowRight, Activity, Lock, Stethoscope, RefreshCw, Sparkles, Filter, CheckCircle2 } from 'lucide-react';
+import { Search, User, Calendar, ShieldCheck, ArrowRight, Stethoscope, RefreshCw, Lock } from 'lucide-react';
 import { Patient, User as UserType } from '../../types';
 import { patientService } from '../services/patientService';
 
@@ -12,13 +12,10 @@ interface PatientDirectoryProps {
 export const PatientDirectory: React.FC<PatientDirectoryProps> = ({
   currentUser,
   onSelectPatient,
-  onOpenSecurityDemo,
 }) => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const isDoctor = currentUser.role?.toLowerCase() === 'doctor' || currentUser.role?.toLowerCase() === 'reviewer';
-  const [activeTab, setActiveTab] = useState<'assigned' | 'all'>(isDoctor ? 'assigned' : 'all');
 
   useEffect(() => {
     loadPatients();
@@ -28,21 +25,17 @@ export const PatientDirectory: React.FC<PatientDirectoryProps> = ({
     setLoading(true);
     try {
       const data = await patientService.listPatients();
-      setPatients(data);
+      // Strictly filter to only assigned/authorized patients for clinicians
+      const assignedOnly = data.filter((p) => p.has_grant);
+      setPatients(assignedOnly);
     } catch (err) {
-      console.error('Failed to load patients', err);
+      console.error('Failed to load assigned patients', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const assignedCount = patients.filter((p) => p.has_grant).length;
-  const totalCount = patients.length;
-
   const displayedPatients = patients.filter((p) => {
-    if (activeTab === 'assigned' && !p.has_grant) {
-      return false;
-    }
     if (!search.trim()) return true;
     const q = search.toLowerCase();
     return (
@@ -54,21 +47,24 @@ export const PatientDirectory: React.FC<PatientDirectoryProps> = ({
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6 animate-fade-in">
-      {/* Header Banner with Clinician Context */}
+      {/* Header Banner */}
       <div className="glass-panel p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm border-2 border-emerald-300 bg-white/95">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse" />
             <span className="text-xs font-mono text-emerald-900 uppercase tracking-wider font-bold">
-              {isDoctor ? 'Clinician Dashboard & Assigned Queue' : 'Authorized Patient Directory'}
+              My Clinical Queue
             </span>
           </div>
           <h1 className="text-2xl font-bold font-heading text-emerald-950 flex items-center gap-2.5">
             <Stethoscope className="w-6 h-6 text-emerald-700" />
-            {isDoctor ? `${currentUser.full_name}'s Clinical Dashboard` : 'Clinical Patient Directory'}
+            My Assigned Patients
+            <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-950 border border-emerald-300 font-bold">
+              {patients.length} Active Charts
+            </span>
           </h1>
           <p className="text-xs text-slate-700 font-medium mt-1">
-            Pre-retrieval access enforcement: Viewing records authorized for <strong className="text-emerald-950 font-bold">{currentUser.email}</strong> under role <span className="font-mono text-emerald-900 font-bold bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300">"{currentUser.role}"</span>.
+            Active clinical charts authorized for <strong className="text-emerald-950 font-bold">{currentUser.full_name}</strong> ({currentUser.email}).
           </p>
         </div>
 
@@ -77,84 +73,25 @@ export const PatientDirectory: React.FC<PatientDirectoryProps> = ({
           disabled={loading}
           className="btn-secondary text-xs flex items-center gap-2 shrink-0 cursor-pointer self-start md:self-auto font-bold text-slate-900 bg-white hover:bg-emerald-50 border border-emerald-300 shadow-2xs"
         >
-          <RefreshCw className={`w-3.5 h-3.5 text-emerald-700 ${loading ? 'animate-spin' : ''}`} /> Refresh Registry
+          <RefreshCw className={`w-3.5 h-3.5 text-emerald-700 ${loading ? 'animate-spin' : ''}`} /> Refresh Queue
         </button>
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 font-mono text-xs">
-        <div className="bg-white p-4 rounded-xl border-2 border-emerald-200 shadow-2xs space-y-1">
-          <div className="text-slate-600 font-bold flex items-center gap-1.5 text-xs">
-            <ShieldCheck className="w-4 h-4 text-emerald-700" /> Assigned to You
-          </div>
-          <div className="text-2xl font-bold font-heading text-emerald-950">
-            {assignedCount} Charts
-          </div>
-          <div className="text-[11px] text-slate-600 font-sans font-medium">Explicit patient grants</div>
-        </div>
-
-        <div className="bg-white p-4 rounded-xl border-2 border-emerald-200 shadow-2xs space-y-1">
-          <div className="text-slate-600 font-bold flex items-center gap-1.5 text-xs">
-            <FileText className="w-4 h-4 text-emerald-700" /> Hospital Registry
-          </div>
-          <div className="text-2xl font-bold font-heading text-emerald-950">
-            {totalCount} Patients
-          </div>
-          <div className="text-[11px] text-slate-600 font-sans font-medium">Total registered charts</div>
-        </div>
-
-        <div className="bg-white p-4 rounded-xl border-2 border-emerald-200 shadow-2xs space-y-1 col-span-2 sm:col-span-1">
-          <div className="text-slate-600 font-bold flex items-center gap-1.5 text-xs">
-            <Lock className="w-4 h-4 text-emerald-700" /> Security Guard
-          </div>
-          <div className="text-2xl font-bold font-heading text-emerald-900 flex items-center gap-1.5">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600" /> Active
-          </div>
-          <div className="text-[11px] text-slate-600 font-sans font-medium">Pre-retrieval enforcement</div>
-        </div>
-      </div>
-
-      {/* Filter Tabs & Search Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        {/* Tabs */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setActiveTab('assigned')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer ${
-              activeTab === 'assigned'
-                ? 'bg-emerald-800 text-white shadow-sm ring-2 ring-emerald-600/30'
-                : 'bg-white text-slate-800 hover:bg-emerald-50 hover:text-emerald-950 border border-emerald-200'
-            }`}
-          >
-            <ShieldCheck className="w-4 h-4" /> My Assigned Patients ({assignedCount})
-          </button>
-
-          <button
-            onClick={() => setActiveTab('all')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer ${
-              activeTab === 'all'
-                ? 'bg-emerald-800 text-white shadow-sm ring-2 ring-emerald-600/30'
-                : 'bg-white text-slate-800 hover:bg-emerald-50 hover:text-emerald-950 border border-emerald-200'
-            }`}
-          >
-            <Filter className="w-4 h-4" /> All Hospital Patients ({totalCount})
-          </button>
-        </div>
-
-        {/* Search */}
-        <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-emerald-700 absolute left-3.5 top-3 pointer-events-none" />
+      {/* Search Bar */}
+      <div className="w-full">
+        <div className="relative flex items-center">
+          <Search className="w-4 h-4 text-emerald-700 absolute left-3.5 pointer-events-none" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, MRN, or ID..."
-            className="input-field pl-10 py-2.5 text-xs shadow-xs bg-white border-2 border-emerald-200 text-slate-900 placeholder:text-slate-500 font-medium focus:border-emerald-500 w-full"
+            placeholder="Search your assigned patients by name, MRN, or Patient ID..."
+            className="input-field pl-10 py-3 text-xs shadow-xs bg-white border-2 border-emerald-200 text-slate-900 placeholder:text-slate-500 font-medium focus:border-emerald-500 w-full"
           />
         </div>
       </div>
 
-      {/* Patients Grid */}
+      {/* Assigned Patients Grid */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {[1, 2, 3].map((n) => (
@@ -167,23 +104,13 @@ export const PatientDirectory: React.FC<PatientDirectoryProps> = ({
             <Lock className="w-6 h-6" />
           </div>
           <h3 className="text-base font-bold text-emerald-950">
-            {activeTab === 'assigned'
-              ? 'No Patients Currently Assigned to Your Account'
-              : 'No Patient Records Found'}
+            {search ? 'No Matching Assigned Patients Found' : 'No Patients Currently Assigned to Your Account'}
           </h3>
           <p className="text-xs text-slate-600 font-medium max-w-md mx-auto">
-            {activeTab === 'assigned'
-              ? `You currently do not have explicit patient grants under '${currentUser.email}'. The hospital administrator can assign patient charts to your clinical profile.`
-              : 'No matching patient records were found in the hospital registry.'}
+            {search
+              ? `No assigned patient records matched "${search}".`
+              : `You currently do not have any patient charts assigned under ${currentUser.email}. The hospital administrator can assign patient charts to your clinical profile.`}
           </p>
-          {activeTab === 'assigned' && totalCount > 0 && (
-            <button
-              onClick={() => setActiveTab('all')}
-              className="btn-secondary text-xs mt-2 inline-flex items-center gap-2 cursor-pointer font-bold"
-            >
-              <Filter className="w-3.5 h-3.5" /> View All Hospital Patients ({totalCount})
-            </button>
-          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -200,21 +127,13 @@ export const PatientDirectory: React.FC<PatientDirectoryProps> = ({
               <div
                 key={patient.id}
                 onClick={() => onSelectPatient(patient.id)}
-                className={`p-5 rounded-2xl cursor-pointer relative overflow-hidden flex flex-col justify-between group transition-all border-2 bg-white shadow-xs ${
-                  !patient.has_grant
-                    ? 'border-rose-300 bg-rose-50/30 hover:border-rose-500 hover:bg-rose-50/60'
-                    : 'border-emerald-200 hover:border-emerald-500 hover:bg-emerald-50/30'
-                }`}
+                className="p-5 rounded-2xl cursor-pointer relative overflow-hidden flex flex-col justify-between group transition-all border-2 border-emerald-200 hover:border-emerald-500 hover:bg-emerald-50/30 bg-white shadow-xs"
               >
-                {/* Authorization Status Chip & Header */}
+                {/* Header & ID */}
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex items-center gap-3">
-                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center font-bold font-mono text-sm shadow-2xs border ${
-                        patient.has_grant
-                          ? 'bg-emerald-100 text-emerald-950 border-emerald-300'
-                          : 'bg-rose-100 text-rose-950 border-rose-300'
-                      }`}>
+                      <div className="w-11 h-11 rounded-xl flex items-center justify-center font-bold font-mono text-sm shadow-2xs border bg-emerald-100 text-emerald-950 border-emerald-300">
                         {patient.id}
                       </div>
                       <div>
@@ -227,18 +146,12 @@ export const PatientDirectory: React.FC<PatientDirectoryProps> = ({
                       </div>
                     </div>
 
-                    {patient.has_grant ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 shrink-0">
-                        <ShieldCheck className="w-3 h-3 text-emerald-700" /> Authorized
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-900 border border-rose-300 shrink-0">
-                        <Lock className="w-3 h-3 text-rose-700" /> No Grant
-                      </span>
-                    )}
+                    <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 shrink-0">
+                      <ShieldCheck className="w-3 h-3 text-emerald-700" /> Authorized
+                    </span>
                   </div>
 
-                  {/* Metadata details — High Contrast Light Box */}
+                  {/* Metadata details */}
                   <div className="space-y-2 text-xs text-slate-900 my-4 bg-emerald-50/80 p-3.5 rounded-xl border border-emerald-200">
                     <div className="flex items-center justify-between text-xs">
                       <span className="flex items-center gap-1.5 text-slate-700 font-medium">
@@ -261,17 +174,11 @@ export const PatientDirectory: React.FC<PatientDirectoryProps> = ({
                   </div>
                 </div>
 
-                {/* Action button footer */}
+                {/* Action footer */}
                 <div className="flex items-center justify-between pt-3 border-t border-slate-200 text-xs font-bold">
-                  {patient.has_grant ? (
-                    <span className="text-emerald-800 flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
-                      Open Patient Workspace <ArrowRight className="w-4 h-4 text-emerald-700" />
-                    </span>
-                  ) : (
-                    <span className="text-rose-900 flex items-center gap-1.5">
-                      <ShieldAlert className="w-4 h-4 text-rose-700" /> Test Access Guard (403)
-                    </span>
-                  )}
+                  <span className="text-emerald-800 flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
+                    Open Patient Workspace <ArrowRight className="w-4 h-4 text-emerald-700" />
+                  </span>
                 </div>
               </div>
             );

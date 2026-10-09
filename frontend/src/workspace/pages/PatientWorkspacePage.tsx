@@ -11,7 +11,6 @@ import { CycleComparison } from '../components/CycleComparison';
 import { ConflictsPanel } from '../components/ConflictsPanel';
 import { DocumentsList } from '../components/DocumentsList';
 import { ChangeSummaryModal } from '../components/ChangeSummaryModal';
-import { SecurityAuditDrawer } from '../components/SecurityAuditDrawer';
 import { AccessDenied } from '../../components/ui/AccessDenied';
 
 interface PatientWorkspacePageProps {
@@ -33,7 +32,6 @@ export const PatientWorkspacePage: React.FC<PatientWorkspacePageProps> = ({
   // Modals state
   const [viewingDoc, setViewingDoc] = useState<{ id: string; page?: number; excerpt?: string } | null>(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [showAuditDrawer, setShowAuditDrawer] = useState(false);
 
   useEffect(() => {
     loadWorkspace();
@@ -100,7 +98,6 @@ export const PatientWorkspacePage: React.FC<PatientWorkspacePageProps> = ({
         brief={brief}
         onBack={onBack}
         onOpenUpload={() => setShowUploadModal(true)}
-        onOpenAudit={() => setShowAuditDrawer(true)}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
@@ -208,13 +205,6 @@ export const PatientWorkspacePage: React.FC<PatientWorkspacePageProps> = ({
           onUploadComplete={() => {
             loadWorkspace();
           }}
-        />
-      )}
-
-      {showAuditDrawer && (
-        <SecurityAuditDrawer
-          patientId={patientId}
-          onClose={() => setShowAuditDrawer(false)}
         />
       )}
     </div>
