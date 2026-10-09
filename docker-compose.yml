@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - DATABASE_URL=sqlite:///./carelens.db
+      - JWT_SECRET=carelens_super_secret_jwt_key_hackathon_2026_clinical_intelligence
+    volumes:
+      - ./storage:/app/storage
+      - ./carelens.db:/app/carelens.db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
