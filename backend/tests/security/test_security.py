@@ -11,8 +11,8 @@ from backend.app.retrieval.vector_search import PatientVectorSearch
 
 def test_patient_authorization_guard():
     db = SessionLocal()
-    doc_a = db.query(User).filter(User.email == "doctor.sarah@carelens.ai").first()
-    doc_b = db.query(User).filter(User.email == "doctor.bob@carelens.ai").first()
+    doc_a = db.query(User).filter(User.email == "doctor.sakthi@carelens.ai").first()
+    doc_b = db.query(User).filter(User.email == "doctor.varun@carelens.ai").first()
     
     # Doctor A has P001 grant
     assert check_patient_authorization(db, doc_a.id, doc_a.role, "P001", "read") is True

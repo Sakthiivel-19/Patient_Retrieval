@@ -152,7 +152,7 @@ export const PatientWorkspacePage: React.FC<PatientWorkspacePageProps> = ({
       </div>
 
       {/* Step Workflow Footer Bar */}
-      <div className="glass-panel p-4 px-6 flex items-center justify-between border-slate-800 shadow-lg">
+      <div className="bg-white p-4 px-6 rounded-2xl flex items-center justify-between border border-slate-200 shadow-xs">
         <button
           type="button"
           onClick={() => {
@@ -166,9 +166,9 @@ export const PatientWorkspacePage: React.FC<PatientWorkspacePageProps> = ({
           ← Previous Step
         </button>
 
-        <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+        <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
           <span>Workflow Progress:</span>
-          <span className="text-cyan-300 font-bold">
+          <span className="text-emerald-700 font-bold">
             Step {['timeline', 'ai', 'reconciliation', 'comparison', 'conflicts', 'documents'].indexOf(activeTab) + 1} of 6
           </span>
         </div>

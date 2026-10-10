@@ -110,9 +110,9 @@ export const SecurityDemoSuite: React.FC<SecurityDemoSuiteProps> = ({ onClose })
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-[#FEFAF3] w-full max-w-3xl max-h-[88vh] flex flex-col shadow-2xl border-2 border-emerald-300 rounded-2xl overflow-hidden">
+      <div className="bg-white w-full max-w-3xl max-h-[88vh] flex flex-col shadow-2xl border border-slate-200 rounded-2xl overflow-hidden">
         {/* Header */}
-        <div className="p-4 px-6 border-b border-emerald-200 flex items-center justify-between bg-white">
+        <div className="p-4 px-6 border-b border-slate-200 flex items-center justify-between bg-white">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-800 shadow-sm">
               <ShieldCheck className="w-5 h-5" />

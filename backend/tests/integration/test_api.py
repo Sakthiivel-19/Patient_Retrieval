@@ -17,7 +17,7 @@ def test_health_endpoint():
 def test_login_and_patient_flow():
     # 1. Login as Doctor A
     login_res = client.post("/api/v1/auth/login", json={
-        "email": "doctor.sarah@carelens.ai",
+        "email": "doctor.sakthi@carelens.ai",
         "password": "password123"
     })
     assert login_res.status_code == 200

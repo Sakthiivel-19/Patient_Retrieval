@@ -41,24 +41,24 @@ export const QuestionPanel: React.FC<QuestionPanelProps> = ({ patientId, onOpenC
   return (
     <div className="space-y-6 animate-fade-in">
       {/* RAG Header */}
-      <div className="glass-panel p-6 space-y-4 bg-white/95 border-2 border-emerald-300 shadow-sm">
+      <div className="bg-white p-6 rounded-2xl space-y-4 border border-slate-200 shadow-xs">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-700 to-teal-500 flex items-center justify-center shadow-md shadow-emerald-900/20">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center shadow-xs">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold font-heading text-emerald-950 flex items-center gap-2">
+              <h2 className="text-xl font-bold font-heading text-slate-900 flex items-center gap-2">
                 Evidence-Backed Clinical Intelligence
               </h2>
-              <p className="text-xs text-slate-700 font-medium">
-                Grounding Principle: <span className="font-mono text-emerald-900 font-bold bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-300">Authorize → Retrieve → Generate → Cite</span>
+              <p className="text-xs text-slate-500 font-medium">
+                Grounding Principle: <span className="font-mono text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Authorize → Retrieve → Generate → Cite</span>
               </p>
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-950 text-xs font-mono font-bold">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" /> Patient-Scoped Scope Filter
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-mono font-semibold">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Patient-Scoped Filter
           </div>
         </div>
 
@@ -75,7 +75,7 @@ export const QuestionPanel: React.FC<QuestionPanelProps> = ({ patientId, onOpenC
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Ask a natural-language clinical question about this patient's history (e.g. 'What tests were requested during the consultation?')..."
             rows={3}
-            className="input-field p-3.5 pr-28 text-sm resize-none rounded-xl bg-slate-50 border-2 border-emerald-200 text-slate-950 font-medium focus:border-emerald-500 placeholder:text-slate-500"
+            className="w-full p-3.5 pr-28 text-sm resize-none rounded-xl bg-slate-50/70 border border-slate-200 text-slate-900 font-medium focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/15 placeholder:text-slate-400 outline-none transition-all shadow-2xs"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -86,7 +86,7 @@ export const QuestionPanel: React.FC<QuestionPanelProps> = ({ patientId, onOpenC
           <button
             type="submit"
             disabled={loading || !question.trim()}
-            className="btn-primary absolute right-3 bottom-3 text-xs py-2 px-4 shadow-sm font-bold"
+            className="btn-primary absolute right-3 bottom-3 text-xs py-2 px-4 shadow-xs font-bold"
           >
             {loading ? (
               <span className="flex items-center gap-1.5">
@@ -103,7 +103,7 @@ export const QuestionPanel: React.FC<QuestionPanelProps> = ({ patientId, onOpenC
 
         {/* Quick Suggested Clinical Questions */}
         <div>
-          <span className="text-xs font-bold text-slate-800 uppercase tracking-wider block mb-2 font-mono">
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-2 font-mono">
             Suggested Clinical Inquiries:
           </span>
           <div className="flex flex-wrap gap-2">
@@ -112,7 +112,7 @@ export const QuestionPanel: React.FC<QuestionPanelProps> = ({ patientId, onOpenC
                 key={i}
                 onClick={() => handleAsk(sq)}
                 disabled={loading}
-                className="text-xs px-3 py-1.5 rounded-lg bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-300 text-emerald-950 font-medium transition-all text-left shadow-2xs cursor-pointer"
+                className="text-xs px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-800 border border-slate-200 text-slate-700 font-medium transition-all text-left shadow-2xs cursor-pointer"
               >
                 {sq}
               </button>
@@ -123,10 +123,10 @@ export const QuestionPanel: React.FC<QuestionPanelProps> = ({ patientId, onOpenC
 
       {/* Error state */}
       {error && (
-        <div className="p-4 rounded-xl bg-rose-100 border border-rose-300 text-xs text-rose-950 flex items-start gap-2.5 font-medium">
-          <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-700 mt-0.5" />
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-900 flex items-start gap-2.5 font-medium">
+          <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600 mt-0.5" />
           <div>
-            <div className="font-bold text-rose-950">Security / Query Error:</div>
+            <div className="font-bold text-rose-900">Security / Query Error:</div>
             <div>{error}</div>
           </div>
         </div>
@@ -134,29 +134,29 @@ export const QuestionPanel: React.FC<QuestionPanelProps> = ({ patientId, onOpenC
 
       {/* Grounded Response View */}
       {response && (
-        <div className="glass-panel p-6 space-y-5 border-2 border-emerald-300 bg-white/95 shadow-sm animate-fade-in">
-          <div className="flex items-center justify-between border-b border-emerald-200 pb-3">
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-950 uppercase tracking-wider font-mono">
-              <CheckCircle2 className="w-4 h-4 text-emerald-700" /> Grounded Clinical Answer
+        <div className="bg-white p-6 rounded-2xl space-y-5 border border-slate-200 shadow-xs animate-fade-in">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-900 uppercase tracking-wider font-mono">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Grounded Clinical Answer
             </div>
-            <div className="text-xs font-mono text-slate-700 font-medium">
-              Retrieval mode: <span className="text-emerald-950 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">{response.retrieval_mode}</span>
+            <div className="text-xs font-mono text-slate-500 font-medium">
+              Retrieval mode: <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">{response.retrieval_mode}</span>
             </div>
           </div>
 
           {/* Formatted Answer */}
-          <div className="text-sm text-slate-950 font-medium leading-relaxed whitespace-pre-line bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200">
+          <div className="text-sm text-slate-800 font-medium leading-relaxed whitespace-pre-line bg-slate-50/80 p-4 rounded-xl border border-slate-100">
             {response.answer}
           </div>
 
           {/* Sources & Citations Section */}
           <div className="space-y-3 pt-2">
-            <h3 className="text-xs font-bold text-emerald-950 uppercase tracking-wider flex items-center gap-1.5 font-mono">
-              <FileText className="w-3.5 h-3.5 text-emerald-700" /> Source Evidence & Provenance Citations ({response.sources.length})
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5 font-mono">
+              <FileText className="w-3.5 h-3.5 text-emerald-600" /> Source Evidence & Provenance Citations ({response.sources.length})
             </h3>
 
             {response.sources.length === 0 ? (
-              <p className="text-xs text-slate-600 italic">
+              <p className="text-xs text-slate-500 italic">
                 No citations available (Uncorroborated by uploaded records).
               </p>
             ) : (
@@ -165,26 +165,26 @@ export const QuestionPanel: React.FC<QuestionPanelProps> = ({ patientId, onOpenC
                   <div
                     key={i}
                     onClick={() => onOpenCitation(src.document, src.page, src.excerpt)}
-                    className="p-3.5 rounded-xl bg-white border-2 border-emerald-200 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all cursor-pointer group flex flex-col justify-between shadow-2xs"
+                    className="p-3.5 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between shadow-2xs"
                   >
                     <div>
-                      <div className="flex items-center justify-between text-xs font-mono text-emerald-950 font-bold mb-1.5">
+                      <div className="flex items-center justify-between text-xs font-mono text-slate-900 font-bold mb-1.5">
                         <span className="flex items-center gap-1">
-                          <FileText className="w-3.5 h-3.5 text-emerald-700" />
+                          <FileText className="w-3.5 h-3.5 text-emerald-600" />
                           {src.document}
                         </span>
-                        <span className="px-2 py-0.5 rounded bg-emerald-100 border border-emerald-300 text-[10px] font-bold text-emerald-950">
+                        <span className="px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-emerald-700">
                           Page {src.page}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-900 font-medium line-clamp-3 italic bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                      <p className="text-xs text-slate-700 font-medium line-clamp-3 italic bg-slate-50 p-2.5 rounded-lg border border-slate-100">
                         "{src.excerpt}"
                       </p>
                     </div>
 
-                    <div className="pt-2 mt-2 border-t border-slate-200 flex items-center justify-end text-xs font-bold text-emerald-800 group-hover:underline">
+                    <div className="pt-2 mt-2 border-t border-slate-100 flex items-center justify-end text-xs font-semibold text-emerald-700 group-hover:underline">
                       <span>Open Document Evidence</span>
-                      <ExternalLink className="w-3.5 h-3.5 ml-1 text-emerald-700" />
+                      <ExternalLink className="w-3.5 h-3.5 ml-1 text-emerald-600" />
                     </div>
                   </div>
                 ))}
@@ -193,10 +193,10 @@ export const QuestionPanel: React.FC<QuestionPanelProps> = ({ patientId, onOpenC
           </div>
 
           {/* AI Boundaries & Limitations Notice */}
-          <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-slate-800 flex items-start gap-2">
-            <Info className="w-4 h-4 flex-shrink-0 text-emerald-700 mt-0.5" />
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-start gap-2">
+            <Info className="w-4 h-4 flex-shrink-0 text-slate-500 mt-0.5" />
             <div>
-              <span className="font-bold text-emerald-950">Clinical AI Safety Boundary: </span>
+              <span className="font-bold text-slate-900">Clinical AI Safety Boundary: </span>
               CareLens AI is an evidence retrieval assistant. All diagnoses and orders must be independently verified by medical professionals.
             </div>
           </div>

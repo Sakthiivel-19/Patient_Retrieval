@@ -287,18 +287,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6 animate-fade-in">
       {/* Top Admin Banner */}
-      <div className="glass-panel p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md border-2 border-emerald-300 bg-white/95">
+      <div className="glass-panel p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs border border-slate-200/80 bg-white rounded-2xl">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse" />
-            <span className="text-xs font-mono text-emerald-900 uppercase tracking-wider font-bold">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-mono text-emerald-800 uppercase tracking-wider font-bold">
               Hospital Administrator Console
             </span>
           </div>
-          <h1 className="text-2xl font-bold font-heading text-emerald-950 flex items-center gap-2.5">
-            <Shield className="w-7 h-7 text-emerald-700" /> Doctor Governance & Patient Access Matrix
+          <h1 className="text-2xl font-bold font-heading text-slate-900 flex items-center gap-2.5">
+            <Shield className="w-7 h-7 text-emerald-600" /> Doctor Governance & Patient Access Matrix
           </h1>
-          <p className="text-xs text-slate-700 font-medium mt-1">
+          <p className="text-xs text-slate-500 font-medium mt-1">
             Inspect individual doctor profiles, register new patients, assign authorizations, and track live clinical activities.
           </p>
         </div>
@@ -306,65 +306,65 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <button
           onClick={loadAllAdminData}
           disabled={loading}
-          className="btn-secondary text-xs flex items-center gap-2 shrink-0 cursor-pointer self-start md:self-auto font-bold text-slate-900 bg-white hover:bg-emerald-50 border border-emerald-300"
+          className="btn-secondary text-xs flex items-center gap-2 shrink-0 cursor-pointer self-start md:self-auto font-bold text-slate-800 bg-white hover:bg-slate-50 border border-slate-200 shadow-2xs"
         >
-          <RefreshCw className={`w-3.5 h-3.5 text-emerald-700 ${loading ? 'animate-spin' : ''}`} /> Refresh Database
+          <RefreshCw className={`w-3.5 h-3.5 text-emerald-600 ${loading ? 'animate-spin' : ''}`} /> Refresh Database
         </button>
       </div>
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono text-xs">
-        <div className="bg-white p-4 rounded-xl border-2 border-emerald-200 shadow-2xs space-y-1">
-          <div className="text-slate-600 font-bold flex items-center gap-1.5 text-xs">
-            <Stethoscope className="w-4 h-4 text-emerald-700" /> Active Clinicians
+        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs space-y-1">
+          <div className="text-slate-500 font-bold flex items-center gap-1.5 text-xs">
+            <Stethoscope className="w-4 h-4 text-emerald-600" /> Active Clinicians
           </div>
-          <div className="text-2xl font-bold font-heading text-emerald-950">
+          <div className="text-2xl font-bold font-heading text-slate-900">
             {doctorsList.length}
           </div>
-          <div className="text-[11px] text-slate-600 font-sans font-medium">Sakthi, Varun, Rakshana...</div>
+          <div className="text-[11px] text-slate-500 font-sans font-medium">Sakthi, Varun, Rakshana...</div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border-2 border-emerald-200 shadow-2xs space-y-1">
-          <div className="text-slate-600 font-bold flex items-center gap-1.5 text-xs">
-            <Key className="w-4 h-4 text-emerald-700" /> Active Patient Grants
+        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs space-y-1">
+          <div className="text-slate-500 font-bold flex items-center gap-1.5 text-xs">
+            <Key className="w-4 h-4 text-emerald-600" /> Active Patient Grants
           </div>
-          <div className="text-2xl font-bold font-heading text-emerald-950">
+          <div className="text-2xl font-bold font-heading text-slate-900">
             {grants.length}
           </div>
-          <div className="text-[11px] text-slate-600 font-sans font-medium">Explicit authorizations</div>
+          <div className="text-[11px] text-slate-500 font-sans font-medium">Explicit authorizations</div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border-2 border-emerald-200 shadow-2xs space-y-1">
-          <div className="text-slate-600 font-bold flex items-center gap-1.5 text-xs">
-            <PatientIcon className="w-4 h-4 text-emerald-700" /> Hospital Patients
+        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs space-y-1">
+          <div className="text-slate-500 font-bold flex items-center gap-1.5 text-xs">
+            <PatientIcon className="w-4 h-4 text-emerald-600" /> Hospital Patients
           </div>
-          <div className="text-2xl font-bold font-heading text-emerald-950">
+          <div className="text-2xl font-bold font-heading text-slate-900">
             {allHospitalPatients.length}
           </div>
-          <div className="text-[11px] text-slate-600 font-sans font-medium">Registered in database</div>
+          <div className="text-[11px] text-slate-500 font-sans font-medium">Registered in database</div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border-2 border-emerald-200 shadow-2xs space-y-1">
-          <div className="text-slate-600 font-bold flex items-center gap-1.5 text-xs">
-            <Database className="w-4 h-4 text-emerald-700" /> Database Status
+        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs space-y-1">
+          <div className="text-slate-500 font-bold flex items-center gap-1.5 text-xs">
+            <Database className="w-4 h-4 text-emerald-600" /> Database Status
           </div>
-          <div className="text-2xl font-bold font-heading text-emerald-900 flex items-center gap-1.5">
+          <div className="text-2xl font-bold font-heading text-emerald-700 flex items-center gap-1.5">
             <CheckCircle2 className="w-5 h-5 text-emerald-600" /> Connected
           </div>
-          <div className="text-[11px] text-slate-600 font-sans font-medium">Hospital SQL Database</div>
+          <div className="text-[11px] text-slate-500 font-sans font-medium">Hospital SQL Database</div>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-emerald-200 pb-3 flex-wrap">
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-3 flex-wrap">
         <button
           onClick={() => {
             setActiveTab('inspect-doctor');
           }}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer ${
             activeTab === 'inspect-doctor'
-              ? 'bg-emerald-800 text-white shadow-sm ring-2 ring-emerald-600/30'
-              : 'bg-white text-slate-800 hover:bg-emerald-50 hover:text-emerald-950 border border-emerald-200'
+              ? 'bg-emerald-600 text-white shadow-xs'
+              : 'bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 border border-slate-200'
           }`}
         >
           <Stethoscope className="w-4 h-4" /> 1. Clinician Directory & Profiles
@@ -374,8 +374,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           onClick={() => setActiveTab('activity')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer ${
             activeTab === 'activity'
-              ? 'bg-emerald-800 text-white shadow-sm ring-2 ring-emerald-600/30'
-              : 'bg-white text-slate-800 hover:bg-emerald-50 hover:text-emerald-950 border border-emerald-200'
+              ? 'bg-emerald-600 text-white shadow-xs'
+              : 'bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 border border-slate-200'
           }`}
         >
           <Activity className="w-4 h-4" /> 2. Doctor Activity Feed ({activities.length})
@@ -385,8 +385,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           onClick={() => setActiveTab('new-doctor')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer ${
             activeTab === 'new-doctor'
-              ? 'bg-emerald-800 text-white shadow-sm ring-2 ring-emerald-600/30'
-              : 'bg-white text-slate-800 hover:bg-emerald-50 hover:text-emerald-950 border border-emerald-200'
+              ? 'bg-emerald-600 text-white shadow-xs'
+              : 'bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 border border-slate-200'
           }`}
         >
           <UserPlus className="w-4 h-4" /> 3. Register New Doctor
@@ -396,8 +396,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           onClick={() => setActiveTab('new-patient')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer ${
             activeTab === 'new-patient'
-              ? 'bg-emerald-800 text-white shadow-sm ring-2 ring-emerald-600/30'
-              : 'bg-white text-slate-800 hover:bg-emerald-50 hover:text-emerald-950 border border-emerald-200'
+              ? 'bg-emerald-600 text-white shadow-xs'
+              : 'bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 border border-slate-200'
           }`}
         >
           <PatientIcon className="w-4 h-4" /> 4. Register New Patient (Intake Desk)

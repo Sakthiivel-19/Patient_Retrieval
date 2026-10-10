@@ -53,19 +53,19 @@ export const CycleComparison: React.FC<CycleComparisonProps> = ({ patientId, onO
   return (
     <div className="glass-panel p-6 space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-emerald-900/10 pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
         <div>
-          <h2 className="text-lg font-bold font-heading text-emerald-950 flex items-center gap-2">
-            <GitCompare className="w-5 h-5 text-emerald-700" /> Longitudinal Clinical Cycle Comparison & Diagnostic Analytics
+          <h2 className="text-lg font-bold font-heading text-slate-900 flex items-center gap-2">
+            <GitCompare className="w-5 h-5 text-emerald-600" /> Longitudinal Clinical Cycle Comparison & Diagnostic Analytics
           </h2>
-          <p className="text-xs text-slate-600 font-medium mt-0.5">
+          <p className="text-xs text-slate-500 font-medium mt-0.5">
             Side-by-side comparative analysis of assessments, orders, and diagnostic lab reports between clinical cycles.
           </p>
         </div>
 
         {data && (
           <div className="flex items-center gap-2 text-xs font-mono">
-            <span className="px-3 py-1 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300 font-semibold shadow-sm">
+            <span className="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold shadow-2xs">
               {data.cycles_analyzed.join(' ↔ ')}
             </span>
           </div>
@@ -75,7 +75,7 @@ export const CycleComparison: React.FC<CycleComparisonProps> = ({ patientId, onO
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="h-28 bg-emerald-50/50 rounded-xl animate-pulse" />
+            <div key={n} className="h-28 bg-slate-100/70 rounded-xl animate-pulse border border-slate-200" />
           ))}
         </div>
       ) : data?.comparison_matrix && data.comparison_matrix.length > 0 ? (
@@ -83,12 +83,12 @@ export const CycleComparison: React.FC<CycleComparisonProps> = ({ patientId, onO
           {data.comparison_matrix.map((row, idx) => (
             <div
               key={idx}
-              className="glass-card p-5 space-y-4 border border-emerald-200/80 hover:border-emerald-400/80 transition-all bg-white/95 shadow-sm"
+              className="glass-card p-5 space-y-4 border border-slate-200 hover:border-emerald-500/80 transition-all bg-white shadow-xs"
             >
               {/* Category Title & Badge */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-emerald-900/10 pb-2.5">
-                <h3 className="font-bold text-emerald-950 text-base flex items-center gap-2 font-heading">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                <h3 className="font-bold text-slate-900 text-base flex items-center gap-2 font-heading">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                   {row.category}
                 </h3>
                 <div>{getChangeBadge(row.change_state)}</div>
