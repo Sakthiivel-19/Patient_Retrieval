@@ -1,4 +1,4 @@
-import { apiRequest } from '../../api/client';
+import { apiRequest, downloadFile } from '../../api/client';
 import {
   ClinicalEvent,
   ClinicalDocument,
@@ -22,6 +22,11 @@ export const workspaceService = {
 
   getDocumentView: async (patientId: string, docId: string): Promise<DocumentViewData> => {
     return apiRequest<DocumentViewData>(`/patients/${patientId}/documents/${docId}/view`);
+  },
+
+  downloadDocumentPdf: async (patientId: string, docId: string, filename: string): Promise<void> => {
+    const safeFilename = filename.toLowerCase().endsWith('.pdf') ? filename : `${filename}.pdf`;
+    return downloadFile(`/patients/${patientId}/documents/${docId}/pdf?download=true`, safeFilename);
   },
 
   askQuestion: async (patientId: string, question: string): Promise<QuestionResponse> => {

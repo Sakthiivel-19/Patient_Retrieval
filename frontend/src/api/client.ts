@@ -54,3 +54,33 @@ export async function apiRequest<T>(
 
   return data as T;
 }
+
+export async function downloadFile(endpoint: string, fallbackFilename: string): Promise<void> {
+  const token = localStorage.getItem('carelens_token');
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const url = `${API_BASE}${endpoint}`;
+  let response: Response;
+  try {
+    response = await fetch(url, { headers });
+  } catch (err: any) {
+    throw new Error(`Failed to connect to backend for download: ${err.message}`);
+  }
+
+  if (!response.ok) {
+    throw new Error(`Download failed with status ${response.status}`);
+  }
+
+  const blob = await response.blob();
+  const blobUrl = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = blobUrl;
+  link.download = fallbackFilename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(blobUrl);
+}

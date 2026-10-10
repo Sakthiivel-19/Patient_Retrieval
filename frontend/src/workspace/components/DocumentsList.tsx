@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, ShieldCheck, Hash, Calendar, Layers, Eye, Upload } from 'lucide-react';
+import { FileText, ShieldCheck, Hash, Calendar, Layers, Eye, Upload, Download, Loader2 } from 'lucide-react';
 import { ClinicalDocument } from '../../types';
 import { workspaceService } from '../services/workspaceService';
 
@@ -12,6 +12,19 @@ interface DocumentsListProps {
 export const DocumentsList: React.FC<DocumentsListProps> = ({ patientId, onOpenDoc, onOpenUpload }) => {
   const [docs, setDocs] = useState<ClinicalDocument[]>([]);
   const [loading, setLoading] = useState(true);
+  const [downloadingDocId, setDownloadingDocId] = useState<string | null>(null);
+
+  const handleDownload = async (docId: string, filename: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDownloadingDocId(docId);
+    try {
+      await workspaceService.downloadDocumentPdf(patientId, docId, filename);
+    } catch (err: any) {
+      alert(`Failed to download PDF: ${err.message}`);
+    } finally {
+      setDownloadingDocId(null);
+    }
+  };
 
   useEffect(() => {
     loadDocs();
@@ -101,12 +114,33 @@ export const DocumentsList: React.FC<DocumentsListProps> = ({ patientId, onOpenD
                   <div className="text-[10px] text-slate-500">{new Date(doc.created_at).toLocaleDateString()}</div>
                 </div>
 
-                <button
-                  onClick={() => onOpenDoc(doc.id)}
-                  className="btn-secondary text-xs py-1.5 px-3 font-bold text-slate-900 bg-white hover:bg-emerald-50 border border-emerald-300 cursor-pointer shadow-2xs"
-                >
-                  <Eye className="w-3.5 h-3.5 text-emerald-700" /> View Chunks & Evidence
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => onOpenDoc(doc.id)}
+                    className="btn-secondary text-xs py-1.5 px-3 font-bold text-slate-900 bg-white hover:bg-emerald-50 border border-emerald-300 cursor-pointer shadow-2xs flex items-center gap-1.5"
+                  >
+                    <Eye className="w-3.5 h-3.5 text-emerald-700" /> View & Provenance
+                  </button>
+
+                  <button
+                    onClick={(e) => handleDownload(doc.id, doc.filename, e)}
+                    disabled={downloadingDocId === doc.id}
+                    title="Download clinical PDF document"
+                    className="btn-primary text-xs py-1.5 px-3 font-bold bg-emerald-800 hover:bg-emerald-700 text-white rounded-lg cursor-pointer shadow-2xs flex items-center gap-1.5"
+                  >
+                    {downloadingDocId === doc.id ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span className="hidden sm:inline">Downloading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">PDF</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           ))}

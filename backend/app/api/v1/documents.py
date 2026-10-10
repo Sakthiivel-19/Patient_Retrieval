@@ -1,13 +1,15 @@
 import os
 from typing import List
 from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
-from fastapi.responses import FileResponse, PlainTextResponse
+from fastapi.responses import FileResponse, PlainTextResponse, Response
 from sqlalchemy.orm import Session
 
-from backend.app.core.database import get_db, User, Document, Chunk
+from backend.app.core.database import get_db, User, Document, Chunk, Patient
 from backend.app.auth.guards import get_current_user, require_patient_access
 from backend.app.schemas.document import DocumentResponse, DocumentChunkResponse
 from backend.app.ingestion.upload import ingest_document
+from backend.app.ingestion.pdf_exporter import build_clinical_pdf
+from backend.app.security.security_logging import log_security_event
 
 router = APIRouter(prefix="/patients/{patient_id}/documents", tags=["Documents"])
 
@@ -117,3 +119,84 @@ def view_document_content(
             } for c in chunks
         ]
     }
+
+
+@router.get("/{document_id}/pdf")
+def get_document_pdf(
+    document_id: str,
+    patient_id: str = Depends(require_patient_access),
+    download: bool = False,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Renders or streams an authentic clinical PDF document for viewing or downloading.
+    """
+    doc = db.query(Document).filter(Document.id == document_id, Document.patient_id == patient_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    patient = db.query(Patient).filter(Patient.id == patient_id).first()
+
+    filename = doc.filename
+    if not filename.lower().endswith(".pdf"):
+        filename = f"{filename}.pdf"
+
+    disposition = "attachment" if download else "inline"
+
+    # Check if physical file on disk is already a binary PDF (%PDF-)
+    if doc.file_path and os.path.exists(doc.file_path):
+        try:
+            with open(doc.file_path, "rb") as f:
+                header = f.read(5)
+            if header.startswith(b"%PDF-"):
+                log_security_event(
+                    db=db,
+                    action="DOCUMENT_PDF_DOWNLOAD",
+                    resource=f"/patients/{patient_id}/documents/{document_id}/pdf",
+                    user_id=current_user.id if current_user else None,
+                    patient_id=patient_id,
+                    metadata={"document_id": doc.id, "filename": filename, "source": "disk_binary"}
+                )
+                return FileResponse(
+                    doc.file_path,
+                    media_type="application/pdf",
+                    filename=filename,
+                    headers={"Content-Disposition": f'{disposition}; filename="{filename}"'}
+                )
+        except Exception:
+            pass
+
+    # Extract text content from file or chunks
+    raw_content = ""
+    if doc.file_path and os.path.exists(doc.file_path):
+        try:
+            with open(doc.file_path, "r", encoding="utf-8", errors="ignore") as f:
+                raw_content = f.read()
+        except Exception:
+            pass
+
+    if not raw_content:
+        chunks = db.query(Chunk).filter(Chunk.document_id == document_id).order_by(Chunk.page_number.asc(), Chunk.chunk_index.asc()).all()
+        raw_content = "\n\n".join(c.content for c in chunks)
+
+    # Generate authentic hospital-grade PDF
+    pdf_bytes = build_clinical_pdf(doc, patient, raw_content)
+
+    log_security_event(
+        db=db,
+        action="DOCUMENT_PDF_DOWNLOAD",
+        resource=f"/patients/{patient_id}/documents/{document_id}/pdf",
+        user_id=current_user.id if current_user else None,
+        patient_id=patient_id,
+        metadata={"document_id": doc.id, "filename": filename, "download": download}
+    )
+
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'{disposition}; filename="{filename}"',
+            "Cache-Control": "no-cache",
+        }
+    )
